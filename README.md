@@ -3,12 +3,6 @@ Comprehensive pipeline for curating and integrating protein-ligand structural an
 
 ## **Folder structure**
 
-# Protein-Ligand Interaction Dataset Pipeline
-
-Este projeto implementa um pipeline completo para preparar datasets de interações proteína-ligante, incluindo download de estruturas PDB, extração de cadeias, filtragem de ligantes, cálculos de embeddings e descritores, e preparação de datasets prontos para modelos de machine learning.
-
-## Estrutura do Projeto
-
 ```text
 protein-ligand-interaction-dataset-pipeline
 │
