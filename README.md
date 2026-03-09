@@ -3,6 +3,13 @@ Comprehensive pipeline for curating and integrating protein-ligand structural an
 
 ## **Folder structure**
 
+# Protein-Ligand Interaction Dataset Pipeline
+
+Este projeto implementa um pipeline completo para preparar datasets de interações proteína-ligante, incluindo download de estruturas PDB, extração de cadeias, filtragem de ligantes, cálculos de embeddings e descritores, e preparação de datasets prontos para modelos de machine learning.
+
+## Estrutura do Projeto
+
+```text
 protein-ligand-interaction-dataset-pipeline
 │
 ├── README.md                     # Project overview
@@ -29,8 +36,8 @@ protein-ligand-interaction-dataset-pipeline
 │   │   └── interaction_details_csv_cif/
 │   │
 │   └── processed/
-|       ├── binary_interactions_csv/
-│       └── esm_embeddings/                # Final ML-ready datasets and 
+│       ├── binary_interactions_csv/
+│       ├── esm_embeddings/                # Final ML-ready datasets
 │       └── mordred_descriptors/
 │
 ├── src/                          # Source code
@@ -47,13 +54,13 @@ protein-ligand-interaction-dataset-pipeline
 │   │   └── binding_affinity/
 │   │
 │   ├── features/                    # Code for embeddings/descriptors
-|   |   ├── esm_embeddings.py
+│   │   ├── esm_embeddings.py
 │   │   └── mordred_descriptors.py                 
 │   │
 │   └── config.py                 # Global configuration and parameters
 │
 ├── pipelines/                    # Scripts to run full or partial pipelines
-|   ├── run_dataset_pipeline.py
+│   ├── run_dataset_pipeline.py
 │   ├── run_embedding_pipeline.py
 │   └── run_full_pipeline.py                  
 │
@@ -73,34 +80,10 @@ protein-ligand-interaction-dataset-pipeline
     ├── pipeline_overview.md
     ├── dataset_description.md
     └── methodology.md
-
+```
 ## **Pipeline / Workflow**
 
-```mermaid
-flowchart TD
-    A[Data Collection] --> B[Chain & Organism Mapping]
-    B --> C[Residue & Ligand Processing]
-    C --> D[Ligand Filtering & Deduplication]
-    D --> E[Protein-Ligand Expansion]
-    E --> F[FASTA & CIF Filtering]
-    F --> G[Atomic Interaction Calculation]
-    G --> H[Binary Interaction Conversion]
-    H --> I[Embedding Generation]
-    I --> J[Bioactivity Data Integration]
-
-    %% Descriptions (optional hover notes in Mermaid)
-    A:::step
-    B:::step
-    C:::step
-    D:::step
-    E:::step
-    F:::step
-    G:::step
-    H:::step
-    I:::step
-    J:::step
-
-    classDef step fill:#f9f,stroke:#333,stroke-width:1px,color:#000,font-weight:bold;
+![Workflow Diagram](results/figures/workflow_diagram.png)
 
 ### **Detailed Workflow**
 
