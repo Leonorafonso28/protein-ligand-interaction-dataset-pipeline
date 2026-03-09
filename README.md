@@ -77,7 +77,7 @@ protein-ligand-interaction-dataset-pipeline
 ```
 ## **Pipeline / Workflow**
 
-<img src="results/figures/workflow_diagram.png" alt="Workflow Diagram" width="400" height="300"/>
+<img src="results/figures/workflow_diagram.png" alt="Workflow Diagram" width="400" />
 
 ### **Detailed Workflow**
 
