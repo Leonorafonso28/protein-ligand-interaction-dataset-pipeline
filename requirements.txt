@@ -1,0 +1,17 @@
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+tensorflow
+requests
+openpyxl
+rdkit
+tqdm
+timeout_decorator
+h5py
+torch
+esm
+mordred
+biopython
+chembl_webresource_client
