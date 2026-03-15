@@ -16,7 +16,7 @@ PIPELINE_STEPS = [
     "src/pipeline/02_cif_protein_chain_and_ligand_extraction",
     "src/pipeline/03_filtering",
     "src/pipeline/04_covalent_bonds",
-    "src/pipeline/05_expand_filter_merge_ligand_datas",
+    "src/pipeline/05_expand_filter_merge_ligand_dataset",
     "src/pipeline/06_filter_cif_fasta_by_ligands",
     "src/pipeline/07_uniprot_mappings",
 ]
