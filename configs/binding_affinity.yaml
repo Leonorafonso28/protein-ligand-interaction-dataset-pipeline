@@ -1,0 +1,64 @@
+# 10_BindingPDB.py
+bindingdb:
+  filtered_df: data/interim/filtered_df.xlsx
+  uniprot_mappings: data/interim/UniProt/uniprot_mappings.csv
+  bindingdb_tsv: data/binding_affinity/BindingDB_All.tsv
+  output_csv: data/binding_affinity/filtered_df_with_BindingDB.csv
+  measures_of_interest:                         # Binding affinity measurement types to retain
+    - "Ki"
+    - "Kd"
+    - "IC50"
+    - "EC50"
+    - "pKi"
+    - "pKd"
+    - "pIC50"
+    - "pChEMBL"
+  relation_filter: "="                          # Only keep rows where Relation == "="
+  unit_conversion:                              # Factors to convert each unit to nM
+    M:  1.0e9
+    mM: 1.0e6
+    uM: 1.0e3
+    nM: 1.0
+    pM: 1.0e-3
+  merge_strategy:                               # Fallback order for matching entries
+    primary: "PDB ID"
+    secondary: "UniProt ID"
+ 
+# 11_ChEMBL.py
+chembl:
+  filtered_df: data/interim/filtered_df.xlsx
+  uniprot_mappings: data/interim/UniProt/uniprot_mappings.csv
+  chembl_id_output: data/binding_affinity/merged_data_filtered_ChEMBL_ID.csv
+  activities_output: data/binding_affinity/activities_data.csv
+  final_output: data/binding_affinity/ChEMBL_activities.csv
+  molecule_lookup_priority:                     # Field priority when searching for molecule_chembl_id
+    - "InChIKey"
+    - "SMILES"
+  activity_fields:                              # Fields to retrieve from ChEMBL activity API
+    - "target_type"
+    - "molecule_chembl_id"
+    - "target_chembl_id"
+    - "type"
+    - "pchembl_value"
+    - "standard_value"
+    - "standard_units"
+    - "standard_relation"
+    - "target_organism"
+    - "assay_type"
+ 
+# 12_PDBBind.py
+pdbbind:
+  index_file: data/raw/binding_affinity_external_dataset/INDEX_general_PL.2020R1.lst
+  filtered_df: data/interim/filtered_df.xlsx
+  output_csv: data/binding_affinity/filtered_df_with_PDBbind.csv
+  affinity_types:                               # Measurement types parsed from the index file
+    - "Ki"
+    - "Kd"
+    - "IC50"
+  unit_conversion:                              # Factors to convert units to Molar (M)
+    mm: 1.0e-3
+    um: 1.0e-6
+    nm: 1.0e-9
+    pm: 1.0e-12
+    m:  1.0
+  output_affinity_unit: "nM"                   # Unit for the Affinity column saved to CSV (converted from M)

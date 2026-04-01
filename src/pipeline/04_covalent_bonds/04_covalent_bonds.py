@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 # Directories
-cif_folder = "data/raw/cif_strucutures/cif"
+cif_folder = "data/raw/cif_structures/cif"
 filtered_excel = "data/interim/filtered_df.xlsx"
 output_csv = "data/interim/covalent_links/covalent_links.csv"
 

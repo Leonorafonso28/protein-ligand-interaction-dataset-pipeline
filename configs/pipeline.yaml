@@ -1,0 +1,113 @@
+# 01_01_saving_pdb_ids.py
+pdb_id_collection:
+  input_dir: data/raw/pdb_ids/pdb/ids          # Directory with raw .txt files containing comma-separated PDB IDs
+  output_file: data/raw/pdb_ids/rcsb_pdb_ids_03_09.txt
+ 
+# 01_02_pdb_download.py
+pdb_download:
+  pdb_id_file: data/raw/pdb_ids/rcsb_pdb_ids_03_09.txt
+  output_dir: data/raw/cif_structures/cif
+  max_entries: 1000                             # Maximum number of PDB entries to process
+  request_timeout: 10                           # Timeout in seconds for HTTP requests
+  request_retries: 5                            # Number of retry attempts per request
+  request_retry_delay: 5                        # Delay in seconds between retries
+  protein_data_output: data/interim/protein_data.csv
+  chain_organisms_output: data/interim/chain_organisms.csv
+  failed_downloads_log: failed_cif_downloads.txt
+ 
+# 02_cif_protein_chain_and_ligand_extraction.py
+cif_extraction:
+  input_dir: data/raw/cif_structures/cif
+  chain_cif_output_dir: data/interim/cif_structures/split_cif_chains
+  fasta_output_dir: data/interim/fasta/fasta_sequences
+  mapping_output_dir: data/interim/author_label_mappings
+  ligands_per_chain_output: data/interim/ligands_per_chain.csv
+  ambiguity_threshold: 0.0                      # Maximum allowed fraction of ambiguous residues per chain (0 = none allowed)
+  ambiguous_residues: ["SEC", "PYL", "UNK"]     # Residues treated as ambiguous
+  remove_water: true                            # Remove HOH residues
+  first_model_only: true                        # Use only the first model in multi-model structures
+ 
+# 03_01_chain_filtering.py
+chain_filtering:
+  ligands_per_chain: data/interim/ligands_per_chain.csv
+  chain_organisms: data/interim/chain_organisms.csv
+  protein_data: data/interim/protein_data.csv
+  organism_output: data/interim/chain_organisms_filtered.xlsx
+  protein_output: data/interim/protein_data_filtered.xlsx
+  filtered_ligands_per_chain_output: data/interim/ligands_per_chain_filtered.csv
+  min_chain_length: 30                          # Minimum number of amino acids per chain
+  require_ligand: true                          # Exclude chains with no ligand (LIGAND_ID == "NO_LIGAND")
+ 
+# 03_02_ligand_filtering.py
+ligand_filtering:
+  ligands_per_chain: data/interim/ligands_per_chain_filtered.csv
+  ligand_database_cif: data/raw/ligand_database/components_09_2025.cif
+  exclusion_lists:
+    biolip2: data/raw/excluded_ligands_datasets/ligand_list_excluded_BioLiP2.txt
+    plic: data/raw/excluded_ligands_datasets/excluded_ligand_ids.txt
+    q_biolip: data/raw/excluded_ligands_datasets/excluded_ligands_Q_BioLiP.txt
+  combined_exclusion_output: data/raw/excluded_ligands_datasets/full_excluded_ligand_ids.txt
+  filtered_output: data/interim/ligands_filtered.csv
+  excluded_output: data/interim/ligands_excluded.csv
+  conflict_excluded_output: data/interim/ligands_excluded_conflicts.csv
+  excluded_counts_output: data/interim/excluded_counts_by_reason.csv
+  questionable_type_log: question_type_valid_chemtype_ligands.txt
+  allowed_chem_types:                           # Accepted _chem_comp.type values
+    - "D-SACCHARIDE"
+    - "L-SACCHARIDE"
+    - "NON-POLYMER"
+    - "PEPTIDE-LIKE"
+    - "SACCHARIDE"
+  allowed_types:                                # Accepted _chem_comp.pdbx_type values
+    - "HETAIN"
+    - "HETAC"
+    - "ATOMS"
+    - "HETAD"
+  forbidden_terms:                              # Keywords in name or type that trigger exclusion
+    - "ion"
+    - "metal"
+    - "solvent"
+    - "water"
+    - "buffer"
+    - "salt"
+    - "terminus"
+    - "linking"
+    - "rna"
+    - "dna"
+    - "cation"
+    - "anion"
+  allowed_atoms: ["H", "C", "N", "O", "F", "P", "S", "Cl", "Br", "I"]
+  min_heavy_atoms: 4                            # Minimum number of heavy atoms required
+  smiles_priority: ["OPENEYE", "CACTVS"]        # SMILES program preference order
+ 
+# 04_covalent_bonds.py
+covalent_bonds:
+  input_dir: data/raw/cif_structures/cif       # Original (non-split) CIF files
+  output_csv: data/interim/covalent_links/covalent_links.csv
+  connection_type: "covale"                     # mmCIF conn_type_id to extract
+ 
+# 05_expand_filter_merge_ligand_data.py
+merge_ligand_data:
+  ligands_per_chain: data/interim/ligands_per_chain_filtered.csv
+  filtered_ligands: data/interim/ligands_filtered.csv
+  protein_data: data/interim/protein_data_filtered.xlsx
+  organisms: data/interim/chain_organisms_filtered.xlsx
+  covalent_links: data/interim/covalent_links/covalent_links.csv
+  output_file: data/interim/filtered_df.xlsx
+  remove_covalent_ligands: true                 # Exclude protein-ligand pairs with covalent bonds
+ 
+# 06_filter_cif_fasta_by_ligands.py
+cif_fasta_filtering:
+  merged_data: data/interim/filtered_df.xlsx
+  cif_input_dir: data/interim/cif_structures/split_cif_chains
+  fasta_input_dir: data/interim/fasta/fasta_sequences
+  cif_output_dir: data/interim/cif_structures/cif_filtered
+  fasta_output_dir: data/interim/fasta/fasta_sequences_filtered
+ 
+# 07_uniprot_mappings.py
+uniprot_mappings:
+  pdb_id_file: data/raw/pdb_ids/rcsb_pdb_ids_03_09.txt
+  output_csv: data/interim/UniProt/uniprot_mappings.csv
+  api_url: "https://www.ebi.ac.uk/pdbe/graph-api/mappings/uniprot/{}"
+  request_timeout: 30                           # Timeout in seconds for API requests
+  exclude_proteoforms: true                     # Skip UniProt accessions starting with "PRO_"

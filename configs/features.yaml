@@ -1,0 +1,23 @@
+# 09_embeddings_ESM2.py
+embeddings_esm2:
+  binary_csv_dir: data/interactions/binary_interactions_csv
+  fasta_dir: data/interim/fasta/fasta_sequences_filtered
+  output_hdf5: data/interactions/interaction_dataset.hdf5
+ 
+  random_seed: 42
+ 
+  # ESM-2 model
+  esm2_model: "esm2_t33_650M_UR50D"            # Pretrained ESM-2 model identifier
+  esm2_repr_layer: 33                           # Transformer layer from which to extract residue representations
+  gpu_device: 1                                 # CUDA device index (set -1 for CPU)
+ 
+  # Mordred descriptors
+  mordred_ignore_3d: true                       # Compute only 2D descriptors (no 3D coordinates required)
+ 
+  # HDF5 structure
+  hdf5_groups:
+    proteins: "proteins/{pdb_id}/{chain_id}"    # Path pattern for protein feature datasets
+    ligands: "ligands/{ligand_id}_{ligand_chain}"
+    interactions: "interactions/{pdb_id}:{chain_id}:{ligand_id}_{ligand_chain}"
+  skip_existing: true                           # Skip proteins/ligands already saved in the HDF5 file
+ 

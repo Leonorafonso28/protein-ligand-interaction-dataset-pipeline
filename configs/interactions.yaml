@@ -1,0 +1,34 @@
+# 08_01_protein_ligand_interaction.py
+protein_ligand_interactions:
+  input_file: data/interim/filtered_df.xlsx
+  cif_dir: data/interim/cif_structures/cif_filtered
+  output_dir: data/interactions/interaction_details_csv_cif
+  log_file: data/interactions/error_log.txt
+  interaction_cutoff: 4.5                       # Distance threshold in Ångströms to classify an atom pair as interacting
+  skip_hydrogens: true                          # Skip hydrogen atoms during interaction computation
+  process_timeout: 3000                         # Timeout in seconds per ligand before the process is killed
+  skip_existing: true                           # Skip output CSV if it already exists (resume-safe)
+ 
+# 08_02_protein_ligand_interaction_binary.py
+binary_interactions:
+  input_dir: data/interactions/interaction_details_csv_cif
+  output_dir: data/interactions/binary_interactions_csv
+  input_suffix: "_interactions.csv"             # Expected suffix of input files
+  output_suffix: "_binary.csv"                  # Suffix for saved binary output files
+  skip_no_interactions: true                    # Do not save binary file if no interacting residues are found
+  groupby_columns:                              # Columns used to aggregate interactions at residue level
+    - "PDB ID"
+    - "PDB Chain"
+    - "LIG ID"
+    - "Chain_Id_Ligand"
+    - "Position"
+    - "Residue_1L"
+    - "Residue_3L"
+  aggregation:
+    Interacting: "max"                          # 1 if any atom pair is interacting, 0 otherwise
+    Ligand_Type: "first"
+    Organism: "first"
+    Resolution: "first"
+    Experimental_Method: "first"
+    Canonical_Smile: "first"
+    Inchikey: "first"

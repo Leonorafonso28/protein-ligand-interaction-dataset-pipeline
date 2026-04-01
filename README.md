@@ -67,7 +67,11 @@ protein-ligand-interaction-dataset-pipeline
 ├── environment.yml               # Conda environment (optional)
 ├── Dockerfile                    # Docker configuration for reproducibility
 │
-├── configs/                      # Configuration files
+├── configs/            # Configuration files
+|   ├── pipeline/
+|   ├── interactions/
+|   ├── features/
+|   └── binding_affinity/             
 │
 ├── data/                         # Project data
 │   ├── raw/                      # Original, unmodified data
@@ -116,16 +120,13 @@ protein-ligand-interaction-dataset-pipeline
 │   ├── run_binding_affinity.py
 │   └── run_all.py                  
 │
-├── notebooks/                     # Jupyter notebooks for EDA or visualization
-│   ├── 01_data_analysis.ipynb
-│   └── 02_interactions_analysis.ipynb
+├── notebooks/                  # Jupyter notebooks for EDA or visualization (future work)
 │
-├── results/                       # Generated results like tables and figures
-│   ├── tables/
-│   └── figures/
-│
-└── docs/                          # Additional documentation
-    └── pipeline_overview.md
+└── results/                       # Generated results like tables and figures
+    ├── tables/
+    ├── reports/
+    └── figures/
+
 ```
 
 ### **Detailed Workflow**
